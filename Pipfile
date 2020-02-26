@@ -6,8 +6,8 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-awscli = '==1.17.3'
-ansible = "*"
+boto3 = "*"
+awscli = "*"
 
 [requires]
 python_version = "3.7"
