@@ -1,0 +1,6 @@
+---
+# vars file for nodejs
+
+nvm_node_version: v12.15.0
+from_apt: true
+from_nvm: false

@@ -1,0 +1,74 @@
+---
+# tasks file for nodejs
+
+- name: Install Nodejs from Ubuntu's repository
+  tags: [install_node]
+  when: from_apt is defined and from_apt
+  apt:
+    name: nodejs*
+    force: yes
+    update_cache: yes
+
+- name: Check if NVM directory exists
+  tags: [install_node]
+  stat:
+    path: "/root/.nvm"
+  register: nvm_dir
+  when:
+    - from_nvm is defined
+    - from_nvm
+
+- name: Install NVM
+  tags: [install_node]
+  when:
+    - from_nvm is defined
+    - from_nvm
+    - not nvm_dir.stat.exists
+  shell: 'wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash'
+  args:
+    executable: '/bin/bash'
+  register: nvm_result
+
+- name: Check if node version is already installed
+  tags: [install_node]
+  when:
+    - from_nvm is defined
+    - from_nvm
+  shell: "source /root/.nvm/nvm.sh && nvm install {{nvm_node_version}}"
+  args:
+    executable: '/bin/bash'
+  register: nvm_installed_version
+
+- name: Install node version
+  tags: [install_node]
+  when:
+    - from_nvm is defined
+    - from_nvm
+    - nvm_installed_version.rc != 0
+  shell: 'source /root/.nvm/nvm.sh && nvm install {{nvm_node_version}}'
+  args:
+    executable: '/bin/bash'
+
+- name: Validate Installed version
+  tags: [install_node]
+  shell: "source /root/.nvm/nvm.sh && which node"
+  args:
+    executable: "/bin/bash"
+  register: which_node
+
+- name: Node Version
+  tags: [install_node]
+  when: nvm_dir
+  shell: "source /root/.nvm/nvm.sh && node --version"
+  args:
+    executable: "/bin/bash"
+  register: node_version
+
+- name: Remove node (Installed from apt)
+  tags: [remove_node_apt]
+  when: from_apt is defined and from_apt
+  apt:
+    name: nodejs*
+    force: yes
+    state: absent
+    update_cache: yes
