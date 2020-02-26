@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 boto3 = "*"
 awscli = "*"
+ansible="==2.8"
 
 [requires]
 python_version = "3.7"
