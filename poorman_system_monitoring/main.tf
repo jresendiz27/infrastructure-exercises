@@ -149,7 +149,39 @@ resource "aws_route_table_association" "systemd_node_table_association" {
 
 resource "aws_instance" "poorman_system_monitoring" {
   ami                         = var.defaultAMI
-  instance_type               = "t3a.micro"
+  instance_type               = "t3a.nano"
+  key_name                    = var.sshKeyName
+  subnet_id                   = aws_subnet.poorman_system_monitoring_subnet.id
+  associate_public_ip_address = true
+  tags = {
+    Name = "poorman_system_monitoring"
+  }
+  availability_zone = var.availabilityZone
+  vpc_security_group_ids = [
+    aws_security_group.allow_ssh.id
+  ]
+  depends_on = [aws_security_group.allow_ssh]
+}
+
+resource "aws_instance" "poorman_system_monitoring_2" {
+  ami                         = var.defaultAMI
+  instance_type               = "t3a.nano"
+  key_name                    = var.sshKeyName
+  subnet_id                   = aws_subnet.poorman_system_monitoring_subnet.id
+  associate_public_ip_address = true
+  tags = {
+    Name = "poorman_system_monitoring"
+  }
+  availability_zone = var.availabilityZone
+  vpc_security_group_ids = [
+    aws_security_group.allow_ssh.id
+  ]
+  depends_on = [aws_security_group.allow_ssh]
+}
+
+resource "aws_instance" "poorman_system_monitoring_3" {
+  ami                         = var.defaultAMI
+  instance_type               = "t3a.nano"
   key_name                    = var.sshKeyName
   subnet_id                   = aws_subnet.poorman_system_monitoring_subnet.id
   associate_public_ip_address = true
